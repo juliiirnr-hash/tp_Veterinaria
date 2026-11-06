@@ -1,0 +1,19 @@
+@baseUrl = http://127.0.0.1:8000
+
+### C-01 parametro de ruta no entero - esperado 422
+GET {{baseUrl}}/duenios/abc
+
+### Cuerpo invalido - esperado 422
+POST {{baseUrl}}/duenios/
+Content-Type: application/json
+
+{}
+
+### Paginacion fuera de rango - esperado 422
+GET {{baseUrl}}/mascotas/?size=0
+
+### Paginacion con pagina 0 - esperado 422
+GET {{baseUrl}}/mascotas/?page=0
+
+### Pagina mas alla de pages - esperado 422
+GET {{baseUrl}}/mascotas/?page=99

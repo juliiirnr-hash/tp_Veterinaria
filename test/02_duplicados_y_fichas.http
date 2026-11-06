@@ -1,0 +1,47 @@
+@baseUrl = http://127.0.0.1:8000
+
+### C-02 email de dueño repetido - esperado 409 con mensaje propio
+POST {{baseUrl}}/duenios/
+Content-Type: application/json
+
+{
+  "nombre": "Otra Persona",
+  "email": "ana@example.com"
+}
+
+### C-02 nombre de práctica repetido - esperado 409 con mensaje propio
+POST {{baseUrl}}/practicas/
+Content-Type: application/json
+
+{
+  "nombre": "Consulta",
+  "precio": "100.00"
+}
+
+### C-03 segunda ficha para el mismo dueño - esperado 409
+POST {{baseUrl}}/duenios/1/ficha
+Content-Type: application/json
+
+{
+  "telefono": "351-555-9999",
+  "direccion": "Calle Falsa 456"
+}
+
+### Ficha para dueño inexistente - esperado 404
+POST {{baseUrl}}/duenios/999/ficha
+Content-Type: application/json
+
+{
+  "telefono": "351-555-0000",
+  "direccion": "Ahorahere 1"
+}
+
+### C-04 mascota con dueño inexistente - esperado 409
+POST {{baseUrl}}/mascotas/
+Content-Type: application/json
+
+{
+  "nombre": "SinDuenio",
+  "especie": "pez",
+  "duenio_id": 999
+}

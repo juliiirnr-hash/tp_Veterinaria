@@ -1,0 +1,36 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Dueño con su ficha - esperado 200
+GET {{baseUrl}}/duenios/1
+
+### PATCH parcial del dueño - esperado 200 con ficha
+PATCH {{baseUrl}}/duenios/2
+Content-Type: application/json
+
+{
+  "nombre": "Juan Actualizado"
+}
+
+### Mascotas del dueño 1 - esperado 200 lista
+GET {{baseUrl}}/duenios/1/mascotas
+
+### Listado paginado de mascotas - esperado 200 envoltorio
+GET {{baseUrl}}/mascotas/?page=1&size=2
+
+### Detalle de mascota con dueño - esperado 200
+GET {{baseUrl}}/mascotas/1
+
+### Catálogo de prácticas - esperado 200
+GET {{baseUrl}}/practicas/
+
+### Detalle de turno con mascota y prácticas - esperado 200
+GET {{baseUrl}}/turnos/1
+
+### C-05 borrar dueño con mascotas - esperado 409
+DELETE {{baseUrl}}/duenios/2
+
+### C-05 borrar turno - esperado 204 y borra sus prácticas en cascada
+DELETE {{baseUrl}}/turnos/1
+
+### Turno borrado - esperado 404
+GET {{baseUrl}}/turnos/1

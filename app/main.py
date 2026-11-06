@@ -1,25 +1,34 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
-import app.core.modelos
+import app.core.modelos  # noqa: F401
+from app.core.database import crear_fabrica_de_sesiones, crear_motor
+from app.modules.duenios.router import router as duenios_router
+from app.modules.health.router import router as health_router
+from app.modules.mascotas.router import router as mascotas_router
+from app.modules.practicas.router import router as practicas_router
+from app.modules.turnos.router import router as turnos_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    motor = crear_motor()
+    app.state.motor = motor
+    app.state.fabrica_de_sesiones = crear_fabrica_de_sesiones(motor)
+    yield
+    await motor.dispose()
+
+
 app = FastAPI(
-    title="Capítulo 4 completo — persistencia: SQLModel, PostgreSQL y el modelo de datos",
+    title="API Veterinaria",
     version="1.0.0",
-    description=(
-        "El proyecto que acompaña a la presentación del capítulo 4, diapositiva por diapositiva.\n\n"
-        "**Parte 1 · cómo se guardan las relaciones** (diapositivas 3 a 8): clave foránea, uno a "
-        "muchos, uno a uno, muchos a muchos con dato propio, agregación y composición, qué pasa al "
-        "borrar y el índice de la clave foránea.\n\n"
-        "**Parte 2 · cómo se leen** (diapositivas 10 a 15): `Relationship()` con `back_populates`, "
-        "declarar no es cargar, el N+1, `selectinload`, la excepción `MissingGreenlet` y "
-        "`joinedload`. Esas respuestas traen `consultas_emitidas`.\n\n"
-        "**Parte 3 · el esquema en la práctica** (diapositivas 17 y 18): CHECK y unicidad en la "
-        "base.\n\n"
-        "Páginas para probarlo en vivo: [la página de inicio](/)."
-    ),
+    description="API asincrónica para la veterinaria de barrio (Programación III - UTN).",
     lifespan=lifespan,
 )
+
+app.include_router(health_router)
+app.include_router(duenios_router)
+app.include_router(mascotas_router)
+app.include_router(practicas_router)
+app.include_router(turnos_router)

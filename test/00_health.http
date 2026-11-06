@@ -1,0 +1,7 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Health live - esperado 200 {"estado":"vivo"}
+GET {{baseUrl}}/health/live
+
+### Health ready - esperado 200 si la base responde
+GET {{baseUrl}}/health/ready
