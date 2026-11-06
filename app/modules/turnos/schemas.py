@@ -2,9 +2,24 @@ from datetime import datetime
 from decimal import Decimal
 
 from pydantic import model_validator
-from sqlmodel import SQLModel
+from sqlmodel import Field, SQLModel
 
-from app.modules.mascotas.schemas import MascotaRead
+
+class PracticaEnTurnoCreate(SQLModel):
+    practica_id: int
+
+
+class TurnoCreate(SQLModel):
+    mascota_id: int
+    fecha: datetime
+    motivo: str
+    practicas: list[PracticaEnTurnoCreate] = Field(min_length=1)
+
+
+class MascotaEnTurnoRead(SQLModel):
+    id: int
+    nombre: str
+    especie: str
 
 
 class TurnoPracticaRead(SQLModel):
@@ -30,5 +45,5 @@ class TurnoRead(SQLModel):
     fecha: datetime
     motivo: str
     total: Decimal
-    mascota: MascotaRead
+    mascota: MascotaEnTurnoRead
     practicas: list[TurnoPracticaRead]

@@ -3,9 +3,17 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.database import get_session
 from app.modules.turnos import service
-from app.modules.turnos.schemas import TurnoRead
+from app.modules.turnos.schemas import TurnoCreate, TurnoRead
 
 router = APIRouter(prefix="/turnos", tags=["turnos"])
+
+
+@router.post("/", response_model=TurnoRead, status_code=201)
+async def crear_turno(
+    datos: TurnoCreate,
+    session: AsyncSession = Depends(get_session),
+) -> TurnoRead:
+    return await service.crear_turno(session, datos)
 
 
 @router.get("/{turno_id}", response_model=TurnoRead)
