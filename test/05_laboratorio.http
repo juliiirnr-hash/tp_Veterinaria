@@ -1,0 +1,24 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Stock del laboratorio - esperado 200 {"vacuna":"rabia","stock":15} en aproximadamente 1 segundo
+GET {{baseUrl}}/laboratorio/stock/rabia
+
+### Mientras la consulta al laboratorio está en curso, health/live responde de inmediato - esperado 200
+GET {{baseUrl}}/health/live
+
+### C-09 primera consulta simultánea al laboratorio (con las dos siguientes)
+# Lanzar las tres peticiones sin esperar la respuesta de la anterior y, mientras están
+# en curso, ejecutar el GET de /health/live. Las tres terminan en ~1 segundo en total
+# (no en 3) y /health/live responde al instante.
+GET {{baseUrl}}/laboratorio/stock/rabia
+
+### C-09 segunda consulta simultánea al laboratorio
+GET {{baseUrl}}/laboratorio/stock/a
+
+### C-09 tercera consulta simultánea al laboratorio
+GET {{baseUrl}}/laboratorio/stock/ccc
+
+### C-09 health/live durante las tres consultas - esperado 200 inmediato
+# También se puede reproducir de forma automática con:
+# .venv\Scripts\python.exe test\c09_concurrencia.py
+GET {{baseUrl}}/health/live
