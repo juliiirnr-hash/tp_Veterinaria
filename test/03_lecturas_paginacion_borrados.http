@@ -26,6 +26,72 @@ GET {{baseUrl}}/practicas/
 ### Detalle de turno con mascota y prácticas - esperado 200
 GET {{baseUrl}}/turnos/1
 
+### C-04 turno con una práctica inexistente - esperado 409 y no se guarda nada
+POST {{baseUrl}}/turnos/
+Content-Type: application/json
+
+{
+  "mascota_id": 1,
+  "fecha": "2026-11-13T08:30:00-03:00",
+  "motivo": "Turno con práctica inexistente",
+  "practicas": [
+    { "practica_id": 999 }
+  ]
+}
+
+### C-04 el turno rechazado no quedó guardado - esperado 404 (después de python reiniciar.py)
+GET {{baseUrl}}/turnos/2
+
+### C-07 turno con una práctica - esperado 201 (después de python reiniciar.py)
+POST {{baseUrl}}/turnos/
+Content-Type: application/json
+
+{
+  "mascota_id": 1,
+  "fecha": "2026-11-13T09:00:00-03:00",
+  "motivo": "Control con una práctica",
+  "practicas": [
+    { "practica_id": 1 }
+  ]
+}
+
+### C-07 detalle con una práctica - esperado 200 y 3 consultas en la consola (echo=True)
+GET {{baseUrl}}/turnos/2
+
+### C-07 turno con tres prácticas - esperado 201
+POST {{baseUrl}}/turnos/
+Content-Type: application/json
+
+{
+  "mascota_id": 2,
+  "fecha": "2026-11-13T10:00:00-03:00",
+  "motivo": "Control con tres prácticas",
+  "practicas": [
+    { "practica_id": 1 },
+    { "practica_id": 2 },
+    { "practica_id": 3 }
+  ]
+}
+
+### C-07 detalle con tres prácticas - esperado 200 y las mismas 3 consultas
+GET {{baseUrl}}/turnos/3
+
+### C-06 turno válido con dos prácticas - esperado 201
+# El servidor copia los precios del catálogo (15000.00 y 12000.00) y calcula total = 27000.00.
+# El cuerpo de la respuesta debe traer "total": "27000.00" y las dos prácticas con su precio_unitario.
+POST {{baseUrl}}/turnos/
+Content-Type: application/json
+
+{
+  "mascota_id": 1,
+  "fecha": "2026-11-13T11:00:00-03:00",
+  "motivo": "C-06 dos prácticas",
+  "practicas": [
+    { "practica_id": 1 },
+    { "practica_id": 2 }
+  ]
+}
+
 ### C-05 borrar dueño con mascotas - esperado 409
 DELETE {{baseUrl}}/duenios/2
 
@@ -34,3 +100,6 @@ DELETE {{baseUrl}}/turnos/1
 
 ### Turno borrado - esperado 404
 GET {{baseUrl}}/turnos/1
+
+### C-05 verificar la cascada en la base
+# Ejecutar test/c05_cascada.sql con psql: debe devolver 0 prácticas para el turno 1.

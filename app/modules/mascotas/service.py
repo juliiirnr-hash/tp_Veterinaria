@@ -60,4 +60,5 @@ async def obtener_mascota(session: AsyncSession, mascota_id: int) -> Mascota | N
         .where(Mascota.id == mascota_id)
         .options(joinedload(Mascota.duenio))
     )
-    return await session.exec(consulta).first()
+    resultado = await session.exec(consulta)
+    return resultado.first()

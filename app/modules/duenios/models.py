@@ -16,9 +16,12 @@ class Duenio(SQLModel, table=True):
 
     ficha: "FichaDuenio" = Relationship(
         back_populates="duenio",
-        sa_relationship_kwargs={"uselist": False},
+        sa_relationship_kwargs={"uselist": False, "passive_deletes": True},
     )
-    mascotas: list["Mascota"] = Relationship(back_populates="duenio")
+    mascotas: list["Mascota"] = Relationship(
+        back_populates="duenio",
+        sa_relationship_kwargs={"passive_deletes": True},
+    )
 
 
 class FichaDuenio(SQLModel, table=True):

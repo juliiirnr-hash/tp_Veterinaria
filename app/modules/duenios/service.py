@@ -30,7 +30,8 @@ async def obtener_duenio(session: AsyncSession, duenio_id: int) -> Duenio | None
         .where(Duenio.id == duenio_id)
         .options(joinedload(Duenio.ficha))
     )
-    return await session.exec(consulta).first()
+    resultado = await session.exec(consulta)
+    return resultado.first()
 
 
 async def actualizar_duenio(
@@ -87,7 +88,8 @@ async def leer_mascotas_del_duenio(session: AsyncSession, duenio_id: int) -> lis
         .where(Duenio.id == duenio_id)
         .options(selectinload(Duenio.mascotas))
     )
-    duenio = await session.exec(consulta).first()
+    resultado = await session.exec(consulta)
+    duenio = resultado.first()
     if not duenio:
         return None
     return duenio.mascotas
